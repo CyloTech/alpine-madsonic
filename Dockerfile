@@ -15,6 +15,9 @@ WORKDIR /madsonic
 
 RUN echo "@commuedge https://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
  && apk -U add \
+    curl \
+    patchelf \
+    libcap \
     ffmpeg \
     openjdk8-jre@commuedge \
     tini@commuedge \
@@ -24,10 +27,12 @@ RUN echo "@commuedge https://nl.alpinelinux.org/alpine/edge/community" >> /etc/a
 COPY start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 
-EXPOSE 4040
-EXPOSE 4050
+RUN ln -s /usr/lib/jvm/java-1.8-openjdk/jre/lib/amd64/server/libjvm.so /lib/libjvm.so && \
+    ln -s /usr/lib/jvm/java-1.8-openjdk/lib/amd64/jli/libjli.so /lib/libjli.so
 
-VOLUME /config /media /playlists /podcasts
+RUN setcap cap_net_bind_service=+ep /usr/lib/jvm/default-jvm/jre/bin/java
+
+EXPOSE 80
 
 LABEL description "Open source media streamer" \
       madsonic "Madsonic v${PKG_VER}"
