@@ -1,7 +1,7 @@
 FROM alpine:edge
 MAINTAINER madsonic <support@madsonic.org>
 
-ENV GID=991 UID=991
+ENV GID=1000 UID=1000
 ENV JVM_MEMORY=256
 
 # Madsonic Package Information
@@ -33,8 +33,5 @@ RUN ln -s /usr/lib/jvm/java-1.8-openjdk/jre/lib/amd64/server/libjvm.so /lib/libj
 RUN setcap cap_net_bind_service=+ep /usr/lib/jvm/default-jvm/jre/bin/java
 
 EXPOSE 80
-
-LABEL description "Open source media streamer" \
-      madsonic "Madsonic v${PKG_VER}"
 
 CMD ["/sbin/tini","--","start.sh"]

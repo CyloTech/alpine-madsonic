@@ -2,7 +2,7 @@
 
 addgroup -g ${GID} madsonic && adduser -h /madsonic -s /bin/sh -D -G madsonic -u ${UID} madsonic
 
-if [ ! -d /config/transcode ]
+if [ ! -d /etc/app_configured ]
     then
 
     mkdir -p /config/transcode
@@ -52,6 +52,10 @@ EOF
     echo "KILLING JAVA"
     echo "*****************************************************************************"
     kill -9 $(pgrep java)
+
+    #Tell Apex we're done installing.
+    curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST "https://api.cylo.io/v1/apps/installed/$INSTANCE_ID"
+    touch /etc/app_configured
 
 fi
 
